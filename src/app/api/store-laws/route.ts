@@ -4,20 +4,20 @@ import {NextApiRequest, NextApiResponse} from "next";
 
 const prisma = new PrismaClient();
 
-export async function POST() {
-    const endpoint = "https://oda.ft.dk/api/Sag?$filter=(typeid eq 3 or typeid eq 5 or typeid eq 9) and periodeid eq 160&$select=id,periodeid,kategoriid,typeid,statusid,titel,titelkort,resume";
+// TODO: How should this be triggered
 
+export async function POST() {
+    const endpoint = "https://oda.ft.dk/api/Sag?$filter=(typeid eq 3 or typeid eq 5 or typeid eq 9) and periodeid eq 160&$select=id,statusid,titel,titelkort,resume";
 
     try {
-        const response = await fetch(endpoint);
-        const data = await response.json();
+        const res = await fetch(endpoint);
+        const data = await res.json();
 
        const createLaws = data.value.map((law: any) => {
             return prisma.law.create({
                 data: {
-                    typeId: law.typeid,
+                    id: law.id,
                     statusId: law.statusid,
-                    periodId: law.periodeid,
                     title: law.titel,
                     titleCard: law.titelkort || null,
                     desc: law.resume,

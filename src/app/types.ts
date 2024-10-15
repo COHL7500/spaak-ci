@@ -7,3 +7,5 @@ export type Law = {
     titleCard: string | null;
     desc: string;
 };
+
+export type ColumnTitle = string | number;
