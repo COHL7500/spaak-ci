@@ -4,7 +4,11 @@ import {NextApiRequest, NextApiResponse} from "next";
 
 const prisma = new PrismaClient();
 
-// TODO: How should this be triggered
+/*
+ Currently, this endpoint is not used in the app. It is only used to store laws in the database.
+ Ideally, it could be triggered by a cron job/calculator, webhook or a button in the app (admin panel).
+ curl -X POST http://localhost:3000/api/store-laws
+ */
 
 export async function POST() {
     const endpoint = "https://oda.ft.dk/api/Sag?$filter=(typeid eq 3 or typeid eq 5 or typeid eq 9) and periodeid eq 160&$select=id,statusid,titel,titelkort,resume";

@@ -2,21 +2,21 @@
 
 import React, {CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import Card from './Card';
-import { ColumnTitle } from '../types';
+import {ColumnTitle, KanbanItem} from '../types';
 import {noScrollbarStyle} from "../styles/GlobalStyles";
 import debounce from 'lodash.debounce';
 
-interface KanbanBoardProps<T> {
-    items: T[];
-    groupBy: keyof T;
+interface KanbanBoardProps {
+    items: KanbanItem[];
+    groupBy: keyof KanbanItem;
 }
 
-interface ColumnProps<T> {
+interface ColumnProps {
     group: ColumnTitle;
-    items: T[];
+    items: KanbanItem[];
     visibleCount: number;
     loadMoreItems: (group: ColumnTitle) => void;
-    renderItem: (item: T) => React.ReactNode;
+    renderItem: (item: KanbanItem) => React.ReactNode;
     scrollPositionRef: React.MutableRefObject<number>;
 }
 
@@ -65,8 +65,8 @@ const ColumnInnerStyle: CSSProperties = {
     ...noScrollbarStyle,
 }
 
-const KanbanBoard = <T,>({ items, groupBy }: KanbanBoardProps<T>) => {
-    const [groups, setGroups] = useState<Record<ColumnTitle, T[]>>({} as Record<ColumnTitle, T[]>);
+const KanbanBoard = ({ items, groupBy }: KanbanBoardProps) => {
+    const [groups, setGroups] = useState<Record<ColumnTitle, KanbanItem[]>>({} as Record<ColumnTitle, KanbanItem[]>);
     const [visibleItems, setVisibleItems] = useState<Record<ColumnTitle, number>>({} as Record<ColumnTitle, number>);
     const scrollPositions = useRef<Record<ColumnTitle, number>>({} as Record<ColumnTitle, number>);
 
@@ -75,7 +75,7 @@ const KanbanBoard = <T,>({ items, groupBy }: KanbanBoardProps<T>) => {
             const key = item[groupBy] as ColumnTitle;
             acc[key] = [...(acc[key] || []), item];
             return acc;
-        }, {} as Record<ColumnTitle, T[]>);
+        }, {} as Record<ColumnTitle, KanbanItem[]>);
 
         setGroups(groupedItems);
         setVisibleItems(
@@ -106,13 +106,13 @@ const KanbanBoard = <T,>({ items, groupBy }: KanbanBoardProps<T>) => {
 
     const getColumnTitle = (group: ColumnTitle) => `Status ${group}`;
 
-    // TODO: Add an interface for the item (DONT USE ANY)
-    const renderItem = (item: T) => (
-        <Card key={(item as any).id} title={(item as any).titleCard
-            ?? (item as any).title} desc={(item as any).desc} />
+
+    const renderItem = (item: KanbanItem) => (
+        <Card title={(item).title} desc={(item).desc} />
     );
 
-    const Column = React.memo(({ group, items, visibleCount, renderItem }: ColumnProps<T>) => {
+    // Should be a separate component...
+    const Column = React.memo(({ group, items, visibleCount, renderItem }: ColumnProps) => {
         const visibleItemsList = items.slice(0, visibleCount);
         const columnRef = useRef<HTMLDivElement | null>(null);
 
