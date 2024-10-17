@@ -9,6 +9,7 @@ import debounce from 'lodash.debounce';
 interface KanbanBoardProps {
     items: KanbanItem[];
     groupBy: keyof KanbanItem;
+    boardTitle: string;
 }
 
 interface ColumnProps {
@@ -20,12 +21,28 @@ interface ColumnProps {
     scrollPositionRef: React.MutableRefObject<number>;
 }
 
+const BoardWrapperStyle: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    margin: '2rem',
+    gap: '1rem',
+    padding: '1rem',
+    height: '100vh',
+    backgroundColor: '#000000',
+    borderRadius: 'var(--border-radius)',
+};
+
+const BoardTitleStyle: CSSProperties = {
+    margin: "1rem",
+    textAlign: 'start',
+    marginBottom: '0 1rem 1rem 0',
+}
+
 const BoardStyle: CSSProperties = {
     display: 'flex',
     gap: '2rem',
-    padding: '1rem',
     overflowX: 'auto',
-    height: '100vh',
+    height: 'calc(100% - 2rem)',
 };
 
 const ColumnStyle: CSSProperties = {
@@ -37,7 +54,7 @@ const ColumnStyle: CSSProperties = {
     overflowY: 'auto',
     borderStyle: 'hidden',
     borderRadius: 'var(--border-radius)',
-    backgroundColor: '#121111',
+    backgroundColor: '#222222',
     position: 'relative',
     ...noScrollbarStyle
 };
@@ -48,7 +65,7 @@ const ColumnTitleStyle: CSSProperties = {
     left: '0',
     right: '0',
     height: '2.5rem',
-    backgroundColor: '#121111',
+    backgroundColor: '#222222',
     color: '#fff',
     textAlign: 'left',
     padding: '0.5rem 0.5rem',
@@ -65,7 +82,7 @@ const ColumnInnerStyle: CSSProperties = {
     ...noScrollbarStyle,
 }
 
-const KanbanBoard = ({ items, groupBy }: KanbanBoardProps) => {
+const KanbanBoard = ({ items, groupBy, boardTitle }: KanbanBoardProps) => {
     const [groups, setGroups] = useState<Record<ColumnTitle, KanbanItem[]>>({} as Record<ColumnTitle, KanbanItem[]>);
     const [visibleItems, setVisibleItems] = useState<Record<ColumnTitle, number>>({} as Record<ColumnTitle, number>);
     const scrollPositions = useRef<Record<ColumnTitle, number>>({} as Record<ColumnTitle, number>);
@@ -139,18 +156,21 @@ const KanbanBoard = ({ items, groupBy }: KanbanBoardProps) => {
     const groupKeys: ColumnTitle[] = Object.keys(groups) as ColumnTitle[];
 
     return (
-        <div style={BoardStyle}>
-            {groupKeys.map((group) => (
-                <Column
-                    key={group}
-                    group={group}
-                    items={groups[group]}
-                    visibleCount={visibleItems[group] || 0}
-                    loadMoreItems={loadMoreItems}
-                    scrollPositionRef={{ current: scrollPositions.current[group] || 0 }}
-                    renderItem={renderItem}
-                />
-            ))}
+        <div style={BoardWrapperStyle}>
+            <h1 style={BoardTitleStyle}>{boardTitle}</h1>
+            <div style={BoardStyle}>
+                {groupKeys.map((group) => (
+                    <Column
+                        key={group}
+                        group={group}
+                        items={groups[group]}
+                        visibleCount={visibleItems[group] || 0}
+                        loadMoreItems={loadMoreItems}
+                        scrollPositionRef={{current: scrollPositions.current[group] || 0}}
+                        renderItem={renderItem}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

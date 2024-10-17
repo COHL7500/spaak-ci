@@ -21,6 +21,7 @@ export default async function KanbanPage() {
         <KanbanBoard
             items={laws}
             groupBy="columnId"
+            boardTitle="Lovforslag"
         />
     );
 }
