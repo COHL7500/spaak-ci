@@ -1,9 +1,9 @@
 'use client';
 
-import React, {CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, { CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Card from './Card';
-import {ColumnTitle, KanbanItem} from '../types';
-import {noScrollbarStyle} from "../styles/GlobalStyles";
+import { ColumnTitle, KanbanItem } from '../types';
+import { noScrollbarStyle } from "../styles/GlobalStyles";
 import debounce from 'lodash.debounce';
 
 interface KanbanBoardProps {
@@ -36,7 +36,7 @@ const BoardTitleStyle: CSSProperties = {
     margin: "1rem",
     textAlign: 'start',
     marginBottom: '0 1rem 1rem 0',
-}
+};
 
 const BoardStyle: CSSProperties = {
     display: 'flex',
@@ -56,7 +56,7 @@ const ColumnStyle: CSSProperties = {
     borderRadius: 'var(--border-radius)',
     backgroundColor: '#222222',
     position: 'relative',
-    ...noScrollbarStyle
+    ...noScrollbarStyle,
 };
 
 const ColumnTitleStyle: CSSProperties = {
@@ -73,14 +73,14 @@ const ColumnTitleStyle: CSSProperties = {
     zIndex: 1,
     fontSize: '1.5rem',
     marginBottom: '0.25rem',
-}
+};
 
 const ColumnInnerStyle: CSSProperties = {
     overflowY: 'scroll',
     height: 'calc(100% - 2rem)',
     paddingTop: '1rem',
     ...noScrollbarStyle,
-}
+};
 
 const KanbanBoard = ({ items, groupBy, boardTitle }: KanbanBoardProps) => {
     const [groups, setGroups] = useState<Record<ColumnTitle, KanbanItem[]>>({} as Record<ColumnTitle, KanbanItem[]>);
@@ -97,38 +97,40 @@ const KanbanBoard = ({ items, groupBy, boardTitle }: KanbanBoardProps) => {
         setGroups(groupedItems);
         setVisibleItems(
             Object.keys(groupedItems).reduce((acc, key) => {
-            acc[key as ColumnTitle] = 10;
-            return acc;
-        }, {} as Record<ColumnTitle, number>));
+                acc[key as ColumnTitle] = 10;
+                return acc;
+            }, {} as Record<ColumnTitle, number>)
+        );
     }, [items, groupBy]);
 
     const loadMoreItems = useCallback(
         debounce((group: ColumnTitle) => {
-        setVisibleItems((prev) => ({
-            ...prev,
-            [group]: prev[group] + 10,
-        }));
-    }, 200),
-    []);
+            setVisibleItems((prev) => ({
+                ...prev,
+                [group]: prev[group] + 10,
+            }));
+        }, 200),
+        []
+    );
 
-    const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>, group: ColumnTitle) => {
-        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const handleScroll = useCallback(
+        (e: React.UIEvent<HTMLDivElement>, group: ColumnTitle) => {
+            const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
 
-        scrollPositions.current[group] = scrollTop;
-        if (scrollTop + clientHeight >= scrollHeight) {
-            loadMoreItems(group);
-        }
-
-    }, [loadMoreItems]);
+            scrollPositions.current[group] = scrollTop;
+            if (scrollTop + clientHeight >= scrollHeight) {
+                loadMoreItems(group);
+            }
+        },
+        [loadMoreItems]
+    );
 
     const getColumnTitle = (group: ColumnTitle) => `Status ${group}`;
 
-
     const renderItem = (item: KanbanItem) => (
-        <Card title={(item).title} desc={(item).desc} />
+        <Card title={item.title} desc={item.desc} />
     );
 
-    // Should be a separate component...
     const Column = React.memo(({ group, items, visibleCount, renderItem }: ColumnProps) => {
         const visibleItemsList = items.slice(0, visibleCount);
         const columnRef = useRef<HTMLDivElement | null>(null);
@@ -140,18 +142,21 @@ const KanbanBoard = ({ items, groupBy, boardTitle }: KanbanBoardProps) => {
         }, []);
 
         return (
-            <div style={ColumnStyle}>
+            <div style={ColumnStyle} key={group}>
                 <h4 style={ColumnTitleStyle}>{getColumnTitle(group)}</h4>
-                    <div
-                        style={ColumnInnerStyle}
-                        onScroll={(e) => handleScroll(e, group)}
-                        ref={columnRef}
-                    >
-                        {visibleItemsList.map((item) => renderItem(item))}
-                    </div>
+                <div
+                    style={ColumnInnerStyle}
+                    onScroll={(e) => handleScroll(e, group)}
+                    ref={columnRef}
+                >
+                    {visibleItemsList.map((item) => (
+                        <div key={item.id}>{renderItem(item)}</div>
+                    ) ) }
+                </div>
             </div>
         );
     });
+
 
     const groupKeys: ColumnTitle[] = Object.keys(groups) as ColumnTitle[];
 
@@ -166,7 +171,7 @@ const KanbanBoard = ({ items, groupBy, boardTitle }: KanbanBoardProps) => {
                         items={groups[group]}
                         visibleCount={visibleItems[group] || 0}
                         loadMoreItems={loadMoreItems}
-                        scrollPositionRef={{current: scrollPositions.current[group] || 0}}
+                        scrollPositionRef={{ current: scrollPositions.current[group] || 0 }}
                         renderItem={renderItem}
                     />
                 ))}

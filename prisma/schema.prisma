@@ -13,11 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// maybe titleCard/titelkort could be used cards and title could be used in the card's page.
 model law {
-  id        Int      @id
+  id        Int      @id @unique
   statusId  Int
   title     String
-  titleCard String?
-  desc      String
+  desc      String?
   createdAt DateTime @default(now())
 }

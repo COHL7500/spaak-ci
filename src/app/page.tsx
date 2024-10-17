@@ -11,8 +11,9 @@ export default async function KanbanPage() {
     const data = await res.json();
 
     const laws: KanbanItem[] = data.data.map((law: Law) => ({
+        id: law.id,
         columnId: law.statusId,
-        title: law.titleCard ?? law.title,
+        title: law.title,
         desc: law.desc,
     }));
 
