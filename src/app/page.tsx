@@ -1,6 +1,10 @@
 import React from 'react';
-import KanbanBoard from '@/app/components/KanbanBoard';
+import KanbanBoard from '@/app/components/kanban/KanbanBoard';
 import {KanbanItem, Law} from './types';
+
+interface ApiResponse {
+    data: Law[];
+}
 
 export default async function KanbanPage() {
 
@@ -8,7 +12,7 @@ export default async function KanbanPage() {
         { next: { revalidate: 600 }
         });
 
-    const data = await res.json();
+    const data: ApiResponse = await res.json();
 
     const laws: KanbanItem[] = data.data.map((law: Law) => ({
         id: law.id,
@@ -21,7 +25,6 @@ export default async function KanbanPage() {
     return (
         <KanbanBoard
             items={laws}
-            groupBy="columnId"
             boardTitle="Lovforslag"
         />
     );
