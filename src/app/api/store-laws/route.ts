@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import {NextApiRequest, NextApiResponse} from "next";
+import {lawQuery} from "@/app/types";
 
 const prisma = new PrismaClient();
 
@@ -10,16 +10,20 @@ const prisma = new PrismaClient();
  curl -X POST http://localhost:3000/api/store-laws
  */
 
+interface ApiResponse {
+    value: lawQuery[];
+}
+
 export async function POST() {
     const endpoint = "https://oda.ft.dk/api/Sag?$filter=(typeid eq 3 or typeid eq 5 or typeid eq 9) and periodeid eq 160&$select=id,statusid,titel,titelkort,resume";
-    let allLaws: any[] = [];
+    let allLaws: lawQuery[] = [];
     let skip = 0;
     const limit = 100;
 
     try {
         while (true) {
             const res = await fetch(`${endpoint}&$skip=${skip}`);
-            const data = await res.json();
+            const data: ApiResponse = await res.json();
 
             if (data.value.length === 0) {
                 break;
@@ -29,14 +33,13 @@ export async function POST() {
             skip += limit;
         }
 
-       const createLaws = allLaws.map((law: any) => {
+       const createLaws = allLaws.map((law: lawQuery) => {
             return prisma.law.create({
                 data: {
                     id: law.id,
                     statusId: law.statusid,
-                    title: law.titel,
-                    titleCard: law.titelkort || null,
-                    desc: law.resume,
+                    title: law.titel || law.titelkort,
+                    desc: law.resume || "", // could also just be law.resume ?? ""
                 },
             });
        });

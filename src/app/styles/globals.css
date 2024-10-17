@@ -2,6 +2,7 @@
   --background: #ffffff;
   --foreground: #171717;
   --border-radius: 8px;
+  --column-color: #222222;
 }
 
 @media (prefers-color-scheme: dark) {

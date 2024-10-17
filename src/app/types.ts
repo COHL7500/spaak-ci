@@ -13,4 +13,13 @@ export type KanbanItem = {
     desc: string;
 };
 
+// can always add more types if expansion is needed
+export type lawQuery = {
+    id: number;
+    statusid: number;
+    titel: string;
+    titelkort: string;
+    resume: string;
+}
+
 export type ColumnTitle = string | number;
