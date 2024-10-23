@@ -13,8 +13,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+}
+
+model Account {
+  id           String  @id @default(cuid())
+  userId       String
+  provider     String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    Int?
+  tokenType    String?
+  scope        String?
+  id_token     String?
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+}
+
+// model Session {
+//   id           String   @id @default(cuid())
+//   sessionToken String   @unique
+//   userId       String
+//   expiresAt    DateTime
+//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
+
 // maybe titleCard/titelkort could be used cards and title could be used in the card's page.
-model law {
+model Law {
   id        Int      @id @unique
   statusId  Int
   title     String
