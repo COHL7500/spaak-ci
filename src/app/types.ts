@@ -22,4 +22,11 @@ export type lawQuery = {
     resume: string;
 }
 
+export interface profile {
+    id: number;
+    name: string;
+    email: string;
+    avatar?: string;
+}
+
 export type ColumnTitle = string | number;

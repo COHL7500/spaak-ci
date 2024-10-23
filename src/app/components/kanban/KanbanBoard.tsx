@@ -59,7 +59,7 @@ const KanbanBoard = ({ items, groupBy = "columnId", boardTitle }: KanbanBoardPro
     // could be moved to Column.tsx (or even utils file), but could limit flexibility.
     const getColumnTitle = (group: ColumnTitle, itemCount: number) => `Status ${group} (${itemCount})`;
 
-    // could be utility or benefit from "Strategy" pattern IF more complex rendering is needed
+    // could be utility or benefit from "Strategy" pattern IF more types of cards are added
     const renderItem = (item: KanbanItem) => (
         <Card title={item.title} desc={item.desc} />
     );

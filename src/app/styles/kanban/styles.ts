@@ -1,6 +1,8 @@
 import {CSSProperties} from "react";
 import {noScrollbarStyle} from "../GlobalStyles";
 
+
+// inline styling library would be ideal here for a child selector instead of repeating "noScrollBarStyle".
 export const BoardWrapperStyle: CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
