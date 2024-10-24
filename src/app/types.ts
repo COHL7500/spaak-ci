@@ -6,11 +6,8 @@ export type Law = {
 };
 
 // meant to be an abstraction for the KanbanBoard component
-export type KanbanItem = {
-    id: number;
+export type KanbanItem = Omit<Law, 'statusId'> & {
     columnId: number; // same as statusId for our case
-    title: string;
-    desc: string;
 };
 
 // can always add more types if expansion is needed
@@ -20,13 +17,6 @@ export type lawQuery = {
     titel: string;
     titelkort: string;
     resume: string;
-}
-
-export interface profile {
-    id: number;
-    name: string;
-    email: string;
-    avatar?: string;
 }
 
 export type ColumnTitle = string | number;
