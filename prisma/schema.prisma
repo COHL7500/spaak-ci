@@ -23,19 +23,20 @@ model User {
 }
 
 model Account {
-  id           String  @id @default(cuid())
-  userId       String
-  provider     String
-  providerId   String
-  accessToken  String?
-  refreshToken String?
-  expiresAt    Int?
-  tokenType    String?
-  scope        String?
-  id_token     String?
-  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  type              String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerId])
+  @@unique([provider, providerAccountId])
 }
 
 // model Session {
