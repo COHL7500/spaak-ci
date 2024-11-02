@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-initspotiss
 
 generator client {
   provider = "prisma-client-js"
@@ -25,11 +25,11 @@ model User {
 model Account {
   id                String  @id @default(cuid())
   userId            String
+  type              String
   provider          String
   providerAccountId String
-  type              String
-  access_token      String?
   refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
