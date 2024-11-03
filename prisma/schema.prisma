@@ -49,9 +49,8 @@ model Account {
 
 // maybe titleCard/titelkort could be used cards and title could be used in the card's page.
 model Law {
-  id        Int      @id @unique
-  statusId  Int
-  title     String
-  desc      String?
-  createdAt DateTime @default(now())
+  id       Int     @id @unique
+  statusId Int
+  title    String
+  desc     String?
 }
